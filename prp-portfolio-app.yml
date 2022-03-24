@@ -1,0 +1,63 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prp-portfolio
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: prp-portfolio
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prp-portfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prp-portfolio
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: prp-portfolio
+    spec:
+      containers:
+      - name: prp-portfolio
+        image: gcr.io/prp-gcp-anthos/prp-prtfolio-app:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: MYSQL_DBHOST
+          value: "10.103.241.3"
+        - name: MYSQL_DBUSER
+          value: "app"
+        - name: MYSQL_DBPASS
+          value: "test"
+        - name: MYSQL_DBPORT
+          value: "3306"
+        - name: MYSQL_DBNAME
+          value: "empdb"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prp-portfolio
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    app: prp-portfolio
