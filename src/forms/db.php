@@ -7,7 +7,7 @@ getenv('MYSQL_DBPASS') ? $db_pass=getenv('MYSQL_DBPASS') : $db_pass="";
 getenv('MYSQL_DBNAME') ? $db_name=getenv('MYSQL_DBNAME') : $db_name="empdb";
 
 /* Connect to MySQL and select the database. */
-$connection = mysqli_connect($db_host, $db_user, $db_pass);
+$connection = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
 
 if (mysqli_connect_errno()) echo "Failed to connect to MySQL: " . mysqli_connect_error();
 
